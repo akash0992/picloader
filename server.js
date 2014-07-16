@@ -6,6 +6,7 @@ var mkdirp = require('mkdirp');
 /// Include the express body parser
 app.configure(function () {
     app.use(express.bodyParser());
+    app.use(express.static(__dirname+"/uploads"));
 });
 
 var form = "<!DOCTYPE HTML><html><body>" +
@@ -62,11 +63,17 @@ app.post('/uploads', upload);
 
 /// Show files
 app.get('/download/:email_id', function (req, res) {
-    file = req.params.file;
-    var img = fs.readFileSync(imageMap[req.params.email_id]);
-    res.writeHead(200, {'Content-Type': 'image/jpg' });
-    res.end(img, 'binary');
+   // file = req.params.file;
+    var folder = __dirname + "/uploads/"+req.params.email_id;
+    var email = req.params.email_id;
+    var imgs = fs.readdirSync(folder);
+    for(index in imgs){
+        imgs[index]= req.params.email_id+"/"+imgs[index];
+    }
+    //var img = fs.readFileSync(imageMap[req.params.email_id]);
+    //res.writeHead(200, {'Content-Type': 'image/jpg' });
+    console.log(imgs)
+    res.send(imgs);
 
 });
-
 app.listen(9999)
